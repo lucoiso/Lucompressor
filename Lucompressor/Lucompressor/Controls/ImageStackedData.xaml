@@ -1,0 +1,30 @@
+﻿<UserControl
+    x:Class="Lucompressor.Controls.ImageStackedData"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Lucompressor.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <RelativePanel>
+        <Image x:Name="Img" Source="{x:Bind ImgSettings.ImgPath, Mode=OneWay}" Margin="4" Width="400" Height="400"/>
+        
+        <StackPanel RelativePanel.RightOf="Img" Orientation="Vertical" Margin="4">
+            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Margin="4">Image Path</TextBlock>
+            <TextBox PlaceholderText="Path" Text="{x:Bind ImgSettings.ImgPath, Mode=OneWay}" Width="290" IsEnabled="False"/>
+            
+            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Margin="4">Output Height</TextBlock>
+            <TextBox x:Name="TBX_Height" PlaceholderText="Height" Text="{x:Bind ImgSettings.ImgHeight, Mode=TwoWay}" 
+                     BeforeTextChanging="ValidateNumber_BeforeTextChanging" TextChanged="TBX_Height_TextChanged" ToolTipService.ToolTip="If set to 0, the system will not change the original value"/>
+            
+            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Margin="4">Output Width</TextBlock>
+            <TextBox x:Name="TBX_Width" PlaceholderText="Width" Text="{x:Bind ImgSettings.ImgWidth, Mode=TwoWay}" 
+                     BeforeTextChanging="ValidateNumber_BeforeTextChanging" TextChanged="TBX_Width_TextChanged" ToolTipService.ToolTip="If set to 0, the system will not change the original value"/>
+            
+            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Margin="4">Output Quality</TextBlock>
+            <Slider x:Name="SLD_Quality" Maximum="100" Minimum="1" SmallChange="1" LargeChange="10" 
+                    Value="{x:Bind ImgSettings.ImgQualityValue, Mode=TwoWay}" ValueChanged="SLD_Quality_ValueChanged"/>
+        </StackPanel>
+    </RelativePanel>
+</UserControl>

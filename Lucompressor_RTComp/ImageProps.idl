@@ -1,0 +1,14 @@
+namespace Lucompressor_RTComp
+{
+    [default_interface]
+    runtimeclass ImageProps
+    {
+        ImageProps();
+        String ImgPath;
+        Int32 ImgHeight;
+        Int32 ImgWidth;
+        Double ImgQualityValue;
+
+        Windows.Foundation.IAsyncOperation<Boolean> CompressImageAndSave(String DestinyPath, Int32 Index);
+    }
+}

@@ -1,0 +1,64 @@
+﻿<Window
+    x:Class="Lucompressor.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Lucompressor"
+    xmlns:controls="using:Lucompressor.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    mc:Ignorable="d">
+
+    <Page>
+        <Page.Background>
+            <ImageBrush ImageSource="ms-appx:///Assets/App_Background.jpg" Stretch="UniformToFill"/>
+        </Page.Background>
+        
+        <Grid>
+            <Grid.Background>                
+                <AcrylicBrush TintOpacity="0.5"
+                              TintLuminosityOpacity="0.5"
+                              TintColor="{ThemeResource SystemAltHighColor}" 
+                              FallbackColor="{ThemeResource SystemAltHighColor}" />
+            </Grid.Background>
+            
+            <StackPanel x:Name="Stack_ImgData" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{ThemeResource SystemControlAcrylicWindowBrush}" Padding="12" CornerRadius="4">
+                <TextBlock Style="{ThemeResource BaseTextBlockStyle}" HorizontalAlignment="Right" Margin="4">The settings below are different for each image</TextBlock>
+                <Grid>               
+                    <FlipView x:Name="Gallery" ItemsSource="{x:Bind ImgSourceArr}" MaxHeight="450" MaxWidth="800" CornerRadius="4" 
+                              Margin="4" Padding="12" Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+                        <FlipView.ItemTemplate>
+                             <DataTemplate x:DataType="controls:ImageStackedData">
+                                 <controls:ImageStackedData ImgSettings="{x:Bind ImgSettings, Mode=OneWay}" />
+                             </DataTemplate>
+                        </FlipView.ItemTemplate>
+                    </FlipView> 
+                
+                    <Button x:Name="BT_Remove" Margin="12" Click="BT_Remove_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom">Remove Image</Button>   
+                </Grid>
+            
+                <PipsPager x:Name="FlipViewPipsPager"
+                    HorizontalAlignment="Center"
+                    Margin="0, 12, 0, 0"
+                    NumberOfPages="{x:Bind ImgSourceArr.Count, Mode=OneWay}"
+                    SelectedPageIndex="{x:Bind Path=Gallery.SelectedIndex, Mode=TwoWay}"
+                    PreviousButtonVisibility="Visible"
+                    NextButtonVisibility="Visible" />
+        
+                <StackPanel Orientation="Horizontal" Margin="12" HorizontalAlignment="Center" VerticalAlignment="Center">        
+                    <Button x:Name="BT_LoadImg" Click="BT_LoadImg_Click" Margin="4" >Load Image</Button>  
+                    <Button x:Name="BT_CompressImgs" Click="BT_CompressImgs_Click" Margin="4" >Compress Images</Button>               
+                </StackPanel>
+    
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">                    
+                    <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Margin="4" VerticalAlignment="Center">Output Directory</TextBlock>                    
+                    <TextBox x:Name="TBX_OutDirectory" PlaceholderText="Output Directory" Margin="4" Width="250"/>                    
+                    <Button x:Name="BT_SearchPath" Click="BT_SearchPath_Click" Margin="4">...</Button>       
+                </StackPanel>
+            </StackPanel>
+        
+            <ContentDialog x:Name="Loading_Dialog" Title="Loading...">
+                <ProgressBar Width="130" IsIndeterminate="True" ShowPaused="False" ShowError="False" />
+            </ContentDialog>
+        </Grid>
+    </Page>
+</Window>
