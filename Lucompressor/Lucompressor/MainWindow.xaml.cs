@@ -158,6 +158,8 @@ namespace Lucompressor
                 {                    
                     if (!await stackedData.ImgSettings.CompressImageAndSave(TBX_OutDirectory.Text, ImgSourceArr.IndexOf(stackedData)))
                     {
+                        Loading_Dialog.Hide();
+
                         ContentDialog ErrDialog = new ContentDialog();
                         ErrDialog.Title = "An error has ocurred";
                         ErrDialog.CloseButtonText = "Close";

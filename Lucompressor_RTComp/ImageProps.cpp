@@ -86,14 +86,17 @@ namespace winrt::Lucompressor_RTComp::implementation
 
             winrt::Windows::Graphics::Imaging::BitmapEncoder Encoder = 
                 co_await winrt::Windows::Graphics::Imaging::BitmapEncoder::CreateAsync(winrt::Windows::Graphics::Imaging::BitmapEncoder::JpegEncoderId(), FileStream, EncodingProps);
-
+                        
             Encoder.SetPixelData(Decoder.BitmapPixelFormat(), 
                 Decoder.BitmapAlphaMode(), 
-                ImgWidth() == 0 ? Decoder.OrientedPixelWidth() : ImgWidth(), 
-                ImgHeight() == 0 ? Decoder.OrientedPixelHeight() : ImgHeight(), 
+                Decoder.OrientedPixelWidth(), 
+                Decoder.OrientedPixelHeight(), 
                 Decoder.DpiX(), 
                 Decoder.DpiY(), 
                 PixelData.DetachPixelData());
+
+            Encoder.BitmapTransform().ScaledHeight(ImgHeight());
+            Encoder.BitmapTransform().ScaledWidth(ImgWidth());
 
             co_await Encoder.FlushAsync();
 
