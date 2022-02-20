@@ -38,11 +38,9 @@ namespace Lucompressor
 
             try
             {
-                // Instanciação de janela do tipo AppWindow, para gerenciamento de múltiplas janelas e customização do app
                 m_appWindow = GetAppWindowForCurrentWindow();
                 if (m_appWindow != null)
                 {
-                    // Windows 10 não suporta customização da barra de títulos
                     if (AppWindowTitleBar.IsCustomizationSupported())
                     {
                         m_appWindow.Title = "Lucompressor";
