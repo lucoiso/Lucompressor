@@ -72,6 +72,11 @@ namespace Lucompressor
             {
                 TBX_OutDirectory.Text = SettingsContainer.Values["OutputDirectory"].ToString();
             }
+            else
+            {
+                TBX_OutDirectory.Text = KnownFolders.PicturesLibrary.Path;
+                SettingsContainer.Values.Add("OutputDirectory", KnownFolders.PicturesLibrary.Path);
+            }
         }
 
         private const string PlaceholderImg_Path = "ms-appx:///Assets/Img_Placeholder.jpg";

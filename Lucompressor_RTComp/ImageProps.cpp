@@ -53,6 +53,11 @@ namespace winrt::Lucompressor_RTComp::implementation
     {
         co_await winrt::resume_background();
 
+        if (DestinyPath.size() == 0 || ImgPath().size() == 0)
+        {
+            co_return false;
+        }
+
         try
         {
             winrt::Windows::Storage::StorageFile File_Ref = co_await winrt::Windows::Storage::StorageFile::GetFileFromPathAsync(ImgPath());
