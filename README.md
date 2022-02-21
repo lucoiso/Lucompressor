@@ -11,8 +11,8 @@ I will be posting the app on the Microsoft Store, I will edit this file adding t
 
 ## Light Theme:
 
-![Lucompressor1](https://user-images.githubusercontent.com/77353979/154866985-93c059b1-babf-4237-81a1-d70dc798f443.png)
+![Lucompressor1](https://user-images.githubusercontent.com/77353979/155013225-e272f0c5-2334-4dfc-b56f-aefa59d6b4c8.png)
 
 ## Dark Theme
 
-![Lucompressor2](https://user-images.githubusercontent.com/77353979/154866995-39f42805-0e6c-47f0-8152-0ad6c98ac35a.png)
+![Lucompressor2](https://user-images.githubusercontent.com/77353979/155013246-715edcb9-45b3-460f-96c9-649bc758a41f.png)
