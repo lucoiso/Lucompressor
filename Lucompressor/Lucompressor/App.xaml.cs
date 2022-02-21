@@ -16,7 +16,7 @@ namespace Lucompressor
         /// </summary>
         public App()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         /// <summary>

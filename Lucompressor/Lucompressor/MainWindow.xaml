@@ -25,7 +25,7 @@
                 <TextBlock Style="{ThemeResource BaseTextBlockStyle}" HorizontalAlignment="Right" Margin="4">The settings below are different for each image</TextBlock>
                 <Grid>               
                     <FlipView x:Name="Gallery" ItemsSource="{x:Bind ImgSourceArr}" MaxHeight="450" MaxWidth="800" CornerRadius="4" 
-                              Margin="4" Padding="12" Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+                              Margin="4" Padding="12" Background="Transparent">
                         <FlipView.ItemTemplate>
                              <DataTemplate x:DataType="controls:ImageStackedData">
                                  <controls:ImageStackedData ImgSettings="{x:Bind ImgSettings, Mode=OneWay}" />
@@ -51,7 +51,7 @@
     
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">                    
                     <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Margin="4" VerticalAlignment="Center">Output Directory</TextBlock>                    
-                    <TextBox x:Name="TBX_OutDirectory" PlaceholderText="Output Directory" Margin="4" Width="250"/>                    
+                    <TextBox x:Name="TBX_OutDirectory" PlaceholderText="Output Directory" Margin="4" Width="250" Loaded="TBX_OutDirectory_Loaded"/>                    
                     <Button x:Name="BT_SearchPath" Click="BT_SearchPath_Click" Margin="4">...</Button>       
                 </StackPanel>
             </StackPanel>

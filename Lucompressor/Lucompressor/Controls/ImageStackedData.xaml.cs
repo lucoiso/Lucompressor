@@ -1,8 +1,7 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using Lucompressor_RTComp;
+﻿using Lucompressor_RTComp;
+using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -27,18 +26,23 @@ namespace Lucompressor.Controls
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         public ImageStackedData()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         private void ValidateNumber_BeforeTextChanging(TextBox sender, TextBoxBeforeTextChangingEventArgs args)
         {
             if (args.NewText.Length != 0)
+            {
                 args.Cancel = !int.TryParse(args.NewText, out _);
+            }
         }
 
         private void TBX_Height_TextChanged(object sender, TextChangedEventArgs e)
@@ -47,7 +51,7 @@ namespace Lucompressor.Controls
         }
 
         private void TBX_Width_TextChanged(object sender, TextChangedEventArgs e)
-        {            
+        {
             ImgSettings.ImgWidth = TBX_Width.Text.Length == 0 ? 0 : int.Parse(TBX_Width.Text);
         }
 

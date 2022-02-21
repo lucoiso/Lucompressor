@@ -10,7 +10,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI;
@@ -23,7 +22,7 @@ namespace Lucompressor
 {
     public sealed partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private AppWindow m_appWindow;
+        private readonly AppWindow m_appWindow;
 
         private AppWindow GetAppWindowForCurrentWindow()
         {
@@ -34,7 +33,7 @@ namespace Lucompressor
 
         public MainWindow()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
             try
             {
@@ -51,29 +50,18 @@ namespace Lucompressor
                     else
                     {
                         Title = "Lucompressor?";
-                        
-                        var Hwnd = WindowNative.GetWindowHandle(this);
-                        var HIcon = User32.LoadImage(IntPtr.Zero, "Assets/AppIcon.ico",
+
+                        IntPtr Hwnd = WindowNative.GetWindowHandle(this);
+                        IntPtr HIcon = User32.LoadImage(IntPtr.Zero, "Assets/AppIcon.ico",
                             User32.ImageType.IMAGE_ICON, 16, 16, User32.LoadImageFlags.LR_LOADFROMFILE);
 
-                        User32.SendMessage(Hwnd, User32.WindowMessage.WM_SETICON, (IntPtr)0, HIcon);                        
+                        User32.SendMessage(Hwnd, User32.WindowMessage.WM_SETICON, (IntPtr)0, HIcon);
                     }
                 }
             }
             catch (Exception e)
             {
                 Debug.WriteLine("Exception throwed while trying to instanciate a AppWindow: " + e.ToString());
-            }
-
-            var SettingsContainer = ApplicationData.Current.LocalSettings;
-            if (SettingsContainer.Values.ContainsKey("OutputDirectory"))
-            {
-                TBX_OutDirectory.Text = SettingsContainer.Values["OutputDirectory"].ToString();
-            }
-            else
-            {
-                TBX_OutDirectory.Text = KnownFolders.PicturesLibrary.Path;
-                SettingsContainer.Values.Add("OutputDirectory", KnownFolders.PicturesLibrary.Path);
             }
         }
 
@@ -98,14 +86,17 @@ namespace Lucompressor
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         private async void BT_LoadImg_Click(object sender, RoutedEventArgs e)
         {
-            var HWND = WindowNative.GetWindowHandle(this);
+            IntPtr HWND = WindowNative.GetWindowHandle(this);
 
-            var FilePicker = new FileOpenPicker();
+            FileOpenPicker FilePicker = new FileOpenPicker();
 
             FilePicker.FileTypeFilter.Add(".jpg");
             FilePicker.FileTypeFilter.Add(".jpeg");
@@ -116,11 +107,14 @@ namespace Lucompressor
             FilePicker.ViewMode = PickerViewMode.Thumbnail;
             FilePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
 
-            var FileArr = await FilePicker.PickMultipleFilesAsync();
+            System.Collections.Generic.IReadOnlyList<StorageFile> FileArr = await FilePicker.PickMultipleFilesAsync();
 
-            if (FileArr.Count == 0) return;
+            if (FileArr.Count == 0)
+            {
+                return;
+            }
 
-            foreach (var file in FileArr)
+            foreach (StorageFile file in FileArr)
             {
                 Debug.WriteLine("Adding path " + file.Path + " to ImgSourceArr.");
 
@@ -141,7 +135,7 @@ namespace Lucompressor
                 ImgSourceArr[0].ImgSettings = new ImageProps();
             }
             else
-            {                
+            {
                 ImgSourceArr.RemoveAt(Gallery.SelectedIndex);
             }
         }
@@ -153,58 +147,82 @@ namespace Lucompressor
                 Loading_Dialog.ShowAsync();
 
                 foreach (ImageStackedData stackedData in ImgSourceArr)
-                {                    
+                {
                     if (!await stackedData.ImgSettings.CompressImageAndSave(TBX_OutDirectory.Text, ImgSourceArr.IndexOf(stackedData)))
                     {
                         Loading_Dialog.Hide();
 
-                        ContentDialog ErrDialog = new ContentDialog();
-                        ErrDialog.Title = "An error has ocurred";
-                        ErrDialog.CloseButtonText = "Close";
-                        ErrDialog.XamlRoot = Loading_Dialog.XamlRoot;
+                        ContentDialog ErrDialog = new ContentDialog
+                        {
+                            Title = "An error has ocurred",
+                            Content = "Check the information entered",
+                            CloseButtonText = "Close",
+                            XamlRoot = Loading_Dialog.XamlRoot
+                        };
                         ErrDialog.ShowAsync();
-                        break;
+                        return;
                     }
                 }
 
                 Loading_Dialog.Hide();
-                
+
                 Gallery.SelectedIndex = 0;
 
                 ImgSourceArr.Clear();
-                ImgSourceArr.Add(new ImageStackedData ());
+                ImgSourceArr.Add(new ImageStackedData());
 
-                ContentDialog CompletedDialog = new ContentDialog();
-                CompletedDialog.Title = "Compression completed";
-                CompletedDialog.CloseButtonText = "Close";
-                CompletedDialog.XamlRoot = Loading_Dialog.XamlRoot;
+                ContentDialog CompletedDialog = new ContentDialog
+                {
+                    Title = "Compression completed",
+                    Content = "Files copied to the output directory",
+                    CloseButtonText = "Close",
+                    XamlRoot = Loading_Dialog.XamlRoot
+                };
                 CompletedDialog.ShowAsync();
             }
         }
 
         private async void BT_SearchPath_Click(object sender, RoutedEventArgs e)
         {
-            var FolderPicker = new FolderPicker();
+            FolderPicker FolderPicker = new FolderPicker();
 
-            var HWND = WindowNative.GetWindowHandle(this);
+            IntPtr HWND = WindowNative.GetWindowHandle(this);
 
             InitializeWithWindow.Initialize(FolderPicker, HWND);
 
             FolderPicker.ViewMode = PickerViewMode.Thumbnail;
             FolderPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
 
-            var SelectedFolder = await FolderPicker.PickSingleFolderAsync();
+            StorageFolder SelectedFolder = await FolderPicker.PickSingleFolderAsync();
 
             if (SelectedFolder != null)
             {
                 TBX_OutDirectory.Text = SelectedFolder.Path;
-                
-                var SettingsContainer = ApplicationData.Current.LocalSettings;
+
+                ApplicationDataContainer SettingsContainer = ApplicationData.Current.LocalSettings;
 
                 if (SettingsContainer.Values.ContainsKey("OutputDirectory"))
+                {
                     SettingsContainer.Values["OutputDirectory"] = SelectedFolder.Path;
+                }
                 else
+                {
                     SettingsContainer.Values.Add("OutputDirectory", SelectedFolder.Path);
+                }
+            }
+        }
+
+        private void TBX_OutDirectory_Loaded(object sender, RoutedEventArgs e)
+        {
+            ApplicationDataContainer SettingsContainer = ApplicationData.Current.LocalSettings;
+            if (SettingsContainer.Values.ContainsKey("OutputDirectory"))
+            {
+                TBX_OutDirectory.Text = SettingsContainer.Values["OutputDirectory"].ToString();
+            }
+            else
+            {
+                TBX_OutDirectory.Text = KnownFolders.PicturesLibrary.Path;
+                SettingsContainer.Values.Add("OutputDirectory", KnownFolders.PicturesLibrary.Path);
             }
         }
     }
