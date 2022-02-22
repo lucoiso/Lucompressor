@@ -9,7 +9,7 @@
   <Identity
     Name="41589LucasOliveiraVilas-B.Lucompressor"
     Publisher="CN=9EDB1010-EDD8-4281-938F-4506C6C9E055"
-    Version="1.0.1.0" />
+    Version="1.0.2.0" />
 
   <Properties>
     <DisplayName>Lucompressor</DisplayName>
@@ -45,6 +45,5 @@
 
   <Capabilities>    
     <rescap:Capability Name="runFullTrust" />
-    <rescap:Capability Name="broadFileSystemAccess" />
   </Capabilities>
 </Package>
