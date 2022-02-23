@@ -7,8 +7,15 @@ There is a Windows Runtime component implemented in C++/WinRT that can have its 
 
 It's a simple app, which can be useful in some cases, but I hope it serves different purposes for those who access it. :)
 
-I will be posting the app on the Microsoft Store, I will edit this file adding the link when in the store.
+# Microsoft Store:
 
+URL:	https://www.microsoft.com/store/apps/9NB140MC75LN
+
+Store ID: 9NB140MC75LN
+
+Store protocol link:	ms-windows-store://pdp/?productid=9NB140MC75LN
+
+# App Preview
 ## Light Theme:
 
 ![Lucompressor1](https://user-images.githubusercontent.com/77353979/155013225-e272f0c5-2334-4dfc-b56f-aefa59d6b4c8.png)
