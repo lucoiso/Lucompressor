@@ -49,7 +49,7 @@ namespace Lucompressor
                     }
                     else
                     {
-                        Title = "Lucompressor?";
+                        Title = "Lucompressor";
 
                         IntPtr Hwnd = WindowNative.GetWindowHandle(this);
                         IntPtr HIcon = User32.LoadImage(IntPtr.Zero, "Assets/AppIcon.ico",
@@ -59,9 +59,9 @@ namespace Lucompressor
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Debug.WriteLine("Exception throwed while trying to instanciate a AppWindow: " + e.ToString());
+                Debug.WriteLine("Exception throwed while trying to instanciate a AppWindow: " + ex.ToString());
             }
         }
 
@@ -84,7 +84,7 @@ namespace Lucompressor
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             if (PropertyChanged != null)
             {
@@ -94,37 +94,48 @@ namespace Lucompressor
 
         private async void BT_LoadImg_Click(object sender, RoutedEventArgs e)
         {
-            IntPtr HWND = WindowNative.GetWindowHandle(this);
-
-            FileOpenPicker FilePicker = new FileOpenPicker();
-
-            FilePicker.FileTypeFilter.Add(".jpg");
-            FilePicker.FileTypeFilter.Add(".jpeg");
-            FilePicker.FileTypeFilter.Add(".png");
-
-            InitializeWithWindow.Initialize(FilePicker, HWND);
-
-            FilePicker.ViewMode = PickerViewMode.Thumbnail;
-            FilePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-
-            System.Collections.Generic.IReadOnlyList<StorageFile> FileArr = await FilePicker.PickMultipleFilesAsync();
-
-            if (FileArr.Count == 0)
+            try
             {
-                return;
-            }
+                IntPtr HWND = WindowNative.GetWindowHandle(this);
 
-            foreach (StorageFile file in FileArr)
-            {
-                Debug.WriteLine("Adding path " + file.Path + " to ImgSourceArr.");
+                FileOpenPicker FilePicker = new FileOpenPicker();
 
-                if (ImgSourceArr[0].ImgSettings.ImgPath == PlaceholderImg_Path)
+                FilePicker.FileTypeFilter.Add(".jpg");
+                FilePicker.FileTypeFilter.Add(".jpeg");
+                FilePicker.FileTypeFilter.Add(".png");
+
+                InitializeWithWindow.Initialize(FilePicker, HWND);
+
+                FilePicker.ViewMode = PickerViewMode.Thumbnail;
+                FilePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+
+                System.Collections.Generic.IReadOnlyList<StorageFile> FileArr = await FilePicker.PickMultipleFilesAsync();
+
+                if (FileArr.Count == 0)
                 {
-                    ImgSourceArr[0].ImgSettings = new ImageProps { ImgPath = file.Path };
-                    continue;
+                    return;
                 }
 
-                ImgSourceArr.Add(new ImageStackedData { ImgSettings = new ImageProps { ImgPath = file.Path } });
+                foreach (StorageFile file in FileArr)
+                {
+                    Debug.WriteLine("Adding path " + file.Path + " to ImgSourceArr.");
+
+                    ImageProps NewImgSettings = new ImageProps { ImgPath = file.Path };
+                    await NewImgSettings.LoadImageSizing();
+
+                    if (ImgSourceArr[0].ImgSettings.ImgPath == PlaceholderImg_Path)
+                    {
+                        ImgSourceArr[0].ImgSettings = NewImgSettings;
+                    }
+                    else
+                    {
+                        ImgSourceArr.Add(new ImageStackedData { ImgSettings = NewImgSettings });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception throwed while trying to load images: " + ex.ToString());
             }
         }
 
@@ -144,7 +155,7 @@ namespace Lucompressor
         {
             if (ImgSourceArr[0].ImgSettings.ImgPath != PlaceholderImg_Path)
             {
-                Loading_Dialog.ShowAsync();
+                _ = Loading_Dialog.ShowAsync();
 
                 foreach (ImageStackedData stackedData in ImgSourceArr)
                 {
@@ -159,7 +170,7 @@ namespace Lucompressor
                             CloseButtonText = "Close",
                             XamlRoot = Loading_Dialog.XamlRoot
                         };
-                        ErrDialog.ShowAsync();
+                        _ = ErrDialog.ShowAsync();
                         return;
                     }
                 }
@@ -178,37 +189,44 @@ namespace Lucompressor
                     CloseButtonText = "Close",
                     XamlRoot = Loading_Dialog.XamlRoot
                 };
-                CompletedDialog.ShowAsync();
+                _ = CompletedDialog.ShowAsync();
             }
         }
 
         private async void BT_SearchPath_Click(object sender, RoutedEventArgs e)
         {
-            FolderPicker FolderPicker = new FolderPicker();
-
-            IntPtr HWND = WindowNative.GetWindowHandle(this);
-
-            InitializeWithWindow.Initialize(FolderPicker, HWND);
-
-            FolderPicker.ViewMode = PickerViewMode.Thumbnail;
-            FolderPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-
-            StorageFolder SelectedFolder = await FolderPicker.PickSingleFolderAsync();
-
-            if (SelectedFolder != null)
+            try
             {
-                TBX_OutDirectory.Text = SelectedFolder.Path;
+                FolderPicker FolderPicker = new FolderPicker();
 
-                ApplicationDataContainer SettingsContainer = ApplicationData.Current.LocalSettings;
+                IntPtr HWND = WindowNative.GetWindowHandle(this);
 
-                if (SettingsContainer.Values.ContainsKey("OutputDirectory"))
+                InitializeWithWindow.Initialize(FolderPicker, HWND);
+
+                FolderPicker.ViewMode = PickerViewMode.Thumbnail;
+                FolderPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+
+                StorageFolder SelectedFolder = await FolderPicker.PickSingleFolderAsync();
+
+                if (SelectedFolder != null)
                 {
-                    SettingsContainer.Values["OutputDirectory"] = SelectedFolder.Path;
+                    TBX_OutDirectory.Text = SelectedFolder.Path;
+
+                    ApplicationDataContainer SettingsContainer = ApplicationData.Current.LocalSettings;
+
+                    if (SettingsContainer.Values.ContainsKey("OutputDirectory"))
+                    {
+                        SettingsContainer.Values["OutputDirectory"] = SelectedFolder.Path;
+                    }
+                    else
+                    {
+                        SettingsContainer.Values.Add("OutputDirectory", SelectedFolder.Path);
+                    }
                 }
-                else
-                {
-                    SettingsContainer.Values.Add("OutputDirectory", SelectedFolder.Path);
-                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception throwed while trying to instanciate a AppWindow: " + ex.ToString());
             }
         }
 

@@ -9,18 +9,19 @@ namespace winrt::Lucompressor_RTComp::implementation
         ImageProps() = default;
 
         winrt::hstring ImgPath();
-        void ImgPath(winrt::hstring value);
+        void ImgPath(const winrt::hstring value);
 
         int32_t ImgHeight();
-        void ImgHeight(int32_t value);
+        void ImgHeight(const int32_t value);
 
         int32_t ImgWidth();
-        void ImgWidth(int32_t value);
+        void ImgWidth(const int32_t value);
 
         double_t ImgQualityValue();
-        void ImgQualityValue(double_t value);
+        void ImgQualityValue(const double_t value);
 
-        winrt::Windows::Foundation::IAsyncOperation<bool> CompressImageAndSave(winrt::hstring DestinyPath, int32_t Index);
+        winrt::Windows::Foundation::IAsyncOperation<bool> CompressImageAndSave(const winrt::hstring DestinyPath, const int32_t Index);
+        winrt::Windows::Foundation::IAsyncAction LoadImageSizing();
 
     private:
         winrt::hstring m_imgpath = L"ms-appx:///Assets/Img_Placeholder.jpg";

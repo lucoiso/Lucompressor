@@ -50,6 +50,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Assets\Lucompressor_Logo.jpg">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Update="Controls\ImageStackedData.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -58,5 +65,11 @@
 <PropertyGroup>
   <CsWinRTIncludes>Lucompressor_RTComp</CsWinRTIncludes>
   <CsWinRTGeneratedFilesDir>$(OutDir)</CsWinRTGeneratedFilesDir>
+  <StartupObject>Lucompressor.Program</StartupObject>
+  <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
+  <PackageIcon>Lucompressor_Logo.jpg</PackageIcon>
+  <RepositoryUrl>https://github.com/lucoiso/Lucompressor</RepositoryUrl>
+  <RepositoryType>git</RepositoryType>
+  <NeutralLanguage>en</NeutralLanguage>
 </PropertyGroup>
 </Project>

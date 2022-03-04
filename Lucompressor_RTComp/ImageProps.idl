@@ -10,5 +10,6 @@ namespace Lucompressor_RTComp
         Double ImgQualityValue;
 
         Windows.Foundation.IAsyncOperation<Boolean> CompressImageAndSave(String DestinyPath, Int32 Index);
+        Windows.Foundation.IAsyncAction LoadImageSizing();
     }
 }
